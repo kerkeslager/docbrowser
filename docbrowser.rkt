@@ -2,7 +2,11 @@
 
 (require
   racket/gui/base
-  racket/block)
+  racket/block
+  "rendering.rkt")
+
+(define (get-document url)
+  url)
 
 (define url-manager%
   (class object%
@@ -61,16 +65,21 @@
     (define/public (set-url url)
       (send url-text-field set-value url))))
 
+
+
 (define main-frame%
   (class frame%
     (init)
-    (super-new [label "Doc Browser"])
+    (super-new
+     [label "Doc Browser"]
+     [min-width 600]
+     [alignment (list 'center 'top)])
 
     (define url-manager (new url-manager%
        [home "Home"]
        [on-url-change-callback (lambda (url)
-                                 (send body set-label url)
-                                 (send control-panel set-url url))]))
+                                 (send control-panel set-url url)
+                                 (send renderer set-document (get-document url)))]))
 
     (define control-panel (new control-panel%
        [parent this]
@@ -81,10 +90,11 @@
        [on-set-url (lambda (url)
                      (send url-manager set-url url))]))
     
-    (define body (new message% [parent this]
-                          [label "No events so far..."]))))
+    (define renderer (new main-renderer%
+                          [parent this]))))
 
 (define main-frame (new main-frame%))
 
 ; Show the frame by calling its show method
+(send main-frame maximize #t)
 (send main-frame show #t)
