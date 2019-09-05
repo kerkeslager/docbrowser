@@ -6,7 +6,8 @@
 (define main-renderer%
   (class vertical-panel%
     (init)
-    (super-new)
+    (super-new
+     [style (list 'auto-vscroll)])
     (define root (new message%
                       [parent this]
                       [label "No events so far..."]))

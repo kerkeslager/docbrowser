@@ -40,9 +40,10 @@
       (on-url-change present))))
 
 (define control-panel%
-  (class horizontal-panel%
+  (class horizontal-pane%
     (init on-back on-forward on-set-url)
-    (super-new)
+    (super-new
+     [stretchable-height #f])
     (new button%
      [parent this]
      [label "Back"]
