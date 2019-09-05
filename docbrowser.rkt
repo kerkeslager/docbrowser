@@ -3,10 +3,8 @@
 (require
   racket/gui/base
   racket/block
+  "get-document.rkt"
   "rendering.rkt")
-
-(define (get-document url)
-  url)
 
 (define url-manager%
   (class object%
@@ -72,8 +70,7 @@
     (init)
     (super-new
      [label "Doc Browser"]
-     [min-width 600]
-     [alignment (list 'center 'top)])
+     [min-width 600])
 
     (define url-manager (new url-manager%
        [home "Home"]
