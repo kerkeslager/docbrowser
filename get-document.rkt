@@ -5,7 +5,7 @@
          racket/string
          "document-utils.rkt")
 
-; TODO This needs to be modified for Windows
+; TODO Make this Windows-compatible
 (define (path-join path-params)
   (string-join (map path/param-path path-params)
                "/"

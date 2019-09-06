@@ -1,7 +1,8 @@
 #lang racket/gui
 (provide main-renderer%)
 
-(require "document-utils.rkt")
+(require
+  "document-utils.rkt")
 
 (define main-renderer%
   (class vertical-panel%
@@ -13,9 +14,11 @@
                       [label "No events so far..."]))
 
     (define (render-text document)
-      (new message%
+      (new canvas%
            [parent this]
-           [label (hash-ref document 'text)]))
+           [paint-callback
+            (lambda (canvas dc)
+              (send dc draw-text (hash-ref document 'text) 0 0))]))
 
     (define (render-error document)
       (new message%
