@@ -11,8 +11,13 @@
                "/"
                #:before-first "/"))
 
-(define (get-file-from-disk path-string)
-  (text-document "file"))
+(define (read-file->string path)
+  (call-with-input-file path
+      port->string
+      #:mode 'text))
+
+(define (get-file-from-disk path)
+  (text-document (read-file->string path)))
 
 (define (get-directory-from-disk path-string)
   (text-document "directory"))
