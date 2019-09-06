@@ -2,16 +2,34 @@
 (provide get-document)
 
 (require net/url
+         racket/string
          "document-utils.rkt")
 
-(define (get-document-from-file url)
+; TODO This needs to be modified for Windows
+(define (path-join path-params)
+  (string-join (map path/param-path path-params)
+               "/"
+               #:before-first "/"))
+
+(define (get-file-from-disk path-string)
   (text-document "file"))
 
-(define (get-document-over-http url)
+(define (get-directory-from-disk path-string)
+  (text-document "directory"))
+
+(define (get-document-from-disk u)
+  (if (url-path-absolute? u)
+      (let ([path-string (path-join (url-path u))])
+        (cond [(file-exists? path-string) (get-file-from-disk path-string)]
+              [(directory-exists? path-string) (get-directory-from-disk path-string)]
+              [else (error-document "file not fount")]))
+      (error-document "file:// paths must be absolute")))
+
+(define (get-document-over-http u)
   (text-document "http or https"))
 
 (define (get-document address)
-  (let ([url (string->url address)])
-    (cond [(equal? "file" (url-scheme url)) (get-document-from-file url)]
-          [(or (equal? "http" (url-scheme url)) (equal? "https" (url-scheme url))) (get-document-over-http url)]
+  (let ([u (string->url address)])
+    (cond [(equal? "file" (url-scheme u)) (get-document-from-disk u)]
+          [(or (equal? "http" (url-scheme u)) (equal? "https" (url-scheme u))) (get-document-over-http u)]
           [else (error-document "failure")])))
