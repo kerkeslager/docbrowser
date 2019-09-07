@@ -1,7 +1,8 @@
 #lang racket
 (provide get-document)
 
-(require net/url
+(require net/head
+         net/url
          racket/string
          "document-utils.rkt")
 
@@ -31,7 +32,13 @@
       (error-document "file:// paths must be absolute")))
 
 (define (get-document-over-http u)
-  (text-document "http or https"))
+  (call/input-url u
+                  get-impure-port
+                  (lambda (in)
+                    (let* ([headers (purify-port in)]
+                           [content-length (extract-field "Content-Length" headers)]
+                           [content (port->string in)])
+                      (text-document content)))))
 
 (define (get-document address)
   (let ([u (string->url address)])
