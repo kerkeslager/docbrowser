@@ -39,6 +39,11 @@
       (set! future '())
       (on-url-change present))))
 
+(define (complete-url u)
+  (cond [(regexp-match? #px"^localhost(:\\d+)?(/|$)" u) (string-append "http://" u)]
+        [(regexp-match? #px"^(\\p{L}+\\.)+\\p{L}+\\.?(:\\d+)?(/|$)" u) (string-append "https://" u)]
+        [else u]))
+
 (define control-panel%
   (class horizontal-pane%
     (init on-back on-forward on-set-url)
@@ -58,7 +63,7 @@
      [label ""]
      [callback (lambda (text-field event)
                  (if (eq? (send event get-event-type) 'text-field-enter)
-                     (on-set-url (send text-field get-value))
+                     (on-set-url (complete-url (send text-field get-value)))
                      #f))]))
 
     (define/public (set-url url)
