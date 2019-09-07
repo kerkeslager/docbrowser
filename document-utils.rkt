@@ -5,10 +5,12 @@
          
 (define (text-document text)
   (hash 'meta (hash 'source "browser"
-                    'type "docbrowser/wrapped/text/plain")
-        'text text))
+                    'type "docbrowser/wrapped")
+        'type "text/plain"
+        'wrapped text))
 
 (define (error-document message)
   (hash 'meta (hash 'source "browser"
-                    'type "docbrowser/error")
-        'message message))
+                    'type "docbrowser/wrapped")
+        'type "doc/error"
+        'wrapped message))

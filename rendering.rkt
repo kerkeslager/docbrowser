@@ -15,7 +15,7 @@
                       [label "No events so far..."]))
 
     (define (render-text document)
-      (let* ([text-string (hash-ref document 'text)]
+      (let* ([text-string (hash-ref document 'wrapped)]
              [canvas (new editor-canvas% [parent this])]
              [text (new text%)])
         (block (send text change-style (make-object style-delta% 'change-size 14))
@@ -28,12 +28,12 @@
     (define (render-error document)
       (new message%
            [parent this]
-           [label (hash-ref document 'message)]))
+           [label (hash-ref document 'wrapped)]))
     
     (define (render document)
-      (case (hash-ref (hash-ref document 'meta) 'type)
-        [("docbrowser/wrapped/text/plain") (render-text document)]
-        [("docbrowser/error") (render-error document)]
+      (case (hash-ref document 'type)
+        [("doc/error") (render-error document)]
+        [("text/plain") (render-text document)]
         [else (render-error (error-document "Unsupported mime type"))]))
 
     (define/public (set-document document)
