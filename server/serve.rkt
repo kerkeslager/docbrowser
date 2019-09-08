@@ -11,7 +11,7 @@
     #"text/plain"
     (list (make-header #"Content-Encoding" #"identity"))
     (list
-      #"Hello, world\n")))
+      (string->bytes/utf-8 "Hello, world"))))
 
 (define (link-handler request)
   (response/full
@@ -23,11 +23,20 @@
     (list
       #"Goodnight, moon\n")))
 
+(define (not-found-handler request)
+  (response/full
+    404
+    #"OK"
+    (current-seconds)
+    #"text/plain"
+    (list (make-header #"Content-Encoding" #"identity"))
+    (list
+      #"404 File not found\n")))
+
 (define-values (base-dispatch base-url)
   (dispatch-rules
    (("") index-handler)
-   (("link") link-handler)
-   (else index-handler)))
+   (("link") link-handler)))
 
 (define (request-handler request)
   (base-dispatch request))
@@ -37,6 +46,7 @@
 ;; Start the server.
 (serve/servlet
   request-handler
+  #:extra-files-paths (list (simplify-path (build-path(resolved-module-path-name (variable-reference->resolved-module-path (#%variable-reference))) 'up "static/")))
   #:listen-ip "127.0.0.1"
   #:port 8888
   #:servlet-path "/"

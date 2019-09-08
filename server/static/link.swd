@@ -1,0 +1,15 @@
+{
+  "meta":{
+    "type": "swd/link"
+  },
+  "text": "The GNU Public License (GPL) 3.0",
+  "type": "text/plain",
+  "address": "gpl-3.0.txt",
+  "checksum": {
+    "algorithm": "sha-1",
+    "hash": "31a3d460bb3c7d98845187c716a30db81c44b615"
+  },
+  "mirrors": [
+    "https://www.gnu.org/licenses/gpl-3.0.txt"
+  ]
+}
