@@ -3,17 +3,34 @@
          web-server/servlet
          web-server/servlet-env)
 
-;; Returns a HTTP response given a HTTP request.
-(define (request-handler request)
+(define (index-handler request)
   (response/full
-    200                  ; HTTP response code.
-    #"OK"                ; HTTP response message.
-    (current-seconds)    ; Timestamp.
-    #"text/plain"        ; MIME type for content.
-    '()                  ; Additional HTTP headers.
-    (list                ; Content (in bytes) to send to the browser.
-      #"Hello, world\n"
+    200
+    #"OK"
+    (current-seconds)
+    #"text/plain"
+    (list (make-header #"Content-Encoding" #"identity"))
+    (list
+      #"Hello, world\n")))
+
+(define (link-handler request)
+  (response/full
+    200
+    #"OK"
+    (current-seconds)
+    #"text/plain"
+    (list (make-header #"Content-Encoding" #"identity"))
+    (list
       #"Goodnight, moon\n")))
+
+(define-values (base-dispatch base-url)
+  (dispatch-rules
+   (("") index-handler)
+   (("link") link-handler)
+   (else index-handler)))
+
+(define (request-handler request)
+  (base-dispatch request))
 
 (block (display "Serving on port ") (display 8888) (display "...") (newline))
 
@@ -23,4 +40,5 @@
   #:listen-ip "127.0.0.1"
   #:port 8888
   #:servlet-path "/"
+  #:servlet-regexp #rx""
   #:command-line? #t)
